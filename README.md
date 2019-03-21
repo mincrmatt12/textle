@@ -37,4 +37,4 @@ The Usage section demonstrates my common use cases.
 ## Licensing
 
 The logo is licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
-This project is licensed under the Apache License 2.0, see `LICENSE` for more information.
+This project is licensed under the MIT License, see `LICENSE` for more information.
