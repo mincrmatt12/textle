@@ -8,6 +8,8 @@
 
 < todo ascii animation >
 
+For more information, see the full documentation on [read the docs](https://textle.readthedocs.io), or in the `docs/` folder.
+
 ## Installation
 
 ```
@@ -20,3 +22,19 @@ Alternatively, install from source by cloning this repo and using
 ```
 $ python3 setup.py install
 ```
+
+If you would like to build the documentation, todo
+
+## Why
+
+This tool was created as I often create small one-off TeX (sometimes from markdown through pandoc) projects that need to be formatted in similar ways, and that I like building quickly.
+`textle` aims to solve these problems: it makes it easy to not only build a project to a PDF once, but even to do it live; and it makes simple the definition of the project. All one has to 
+do is either use the CLI, which was designed to be powerful and simple, or write a `Textlefile`. The project also aimed to be lightweight, both binary-wise and filesystem-wise, the idea being to 
+not pollute a VCS with random files.
+
+The Usage section demonstrates my common use cases.
+
+## Licensing
+
+The logo is licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+This project is licensed under the Apache License 2.0, see `LICENSE` for more information.
