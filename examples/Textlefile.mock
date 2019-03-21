@@ -1,0 +1,17 @@
+version 1
+
+# option only valid at top of file
+
+flat=true
+---
+tex:test.tex -> pdf:out.pdf
+
+global_option=false
+
+[tex]
+option="value"
+requires="test"
+requires="also"
+
+# ignored comments
+
