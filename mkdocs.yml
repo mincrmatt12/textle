@@ -2,3 +2,6 @@ site_name: textle documentation
 
 nav:
     - Home: "index.md"
+
+theme:
+    name: readthedocs
