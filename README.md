@@ -1,6 +1,6 @@
 # `textle`
 
-![logo](docs/logo.png)
+![logo](docs/img/logo.png)
 
 `textle` is software to automate the use of typesetting and their support tools, like `LaTeX` and `pandoc`.
 
@@ -37,4 +37,5 @@ The Usage section demonstrates my common use cases.
 ## Licensing
 
 The logo is licensed under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
 This project is licensed under the MIT License, see `LICENSE` for more information.
