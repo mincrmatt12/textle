@@ -1,6 +1,6 @@
 import enum
 
-class FileUse(enum.enum):
+class FileUse(enum.Enum):
     INPUT = 1,
     GENERATED = 2,
     OUTPUT = 3

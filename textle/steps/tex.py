@@ -16,4 +16,3 @@ class TeXStep(Step):
 
         # this is a thingy
 
-

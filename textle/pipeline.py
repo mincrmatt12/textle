@@ -1,6 +1,6 @@
 import abc
 import os
-from fileref import FileRef, FileUse
+from .fileref import FileRef, FileUse
 
 class Extra:
     """
@@ -177,7 +177,7 @@ class Pipeline:
         for j, i in enumerate(self.steps[:-1]):
             if i.input == None and j == 0:
                 raise RuntimeError("No input for first pipeline step!")
-            else if i.input == None:
+            elif i.input == None:
                 i.set_input(self.steps[j-1].output)
             if i.output == None:
                 if i.get_output_type() not in self.steps[j+1].get_input_types_valid():
@@ -241,3 +241,4 @@ class Pipeline:
 
         return resultant_commands
 
+steps = []
