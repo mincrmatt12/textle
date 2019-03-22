@@ -1,4 +1,5 @@
 from lark import Lark
+from .pipeline import pipeline_raw
 
 l = Lark("""
 %import common.WS
@@ -26,13 +27,4 @@ options: (CNAME "=" value)*
 pipeline_i: pipeline options (section options)*
 
 section: "[" CNAME "]"
-
-FNAME: ("."|LETTER)+
-
-pipeline: a_step ("->" a_step)+
-
-a_step: step ("+" step)*
-step: name_options [":" FNAME ("," FNAME)*]
-
-name_options: CNAME ("." CNAME)*
-""", start="textlefile")
+""" + pipeline_raw, start="textlefile")
