@@ -42,6 +42,8 @@ class Textle:
         if type(self.global_options["externals"]) is not list:
             self.global_options["externals"] = [self.global_options["externals"]]
         self.root_dir = os.path.abspath(root_dir)
+        for j in range(len(self.global_options["externals"])):
+            self.global_options["externals"][j] = os.path.join(self.root_dir, self.global_options["externals"][j])
 
         self.layout_roots()
 

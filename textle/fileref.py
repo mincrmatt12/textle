@@ -1,4 +1,5 @@
 import enum
+import os
 
 class FileUse(enum.Enum):
     INPUT = 1,
@@ -24,3 +25,13 @@ class FileRef:
 
     def __hash__(self):
         return hash((self.tag, self.ext, self.use))
+
+def to_fref(string, use, allow_absolute=False):
+    if not allow_absolute and os.path.isabs(string):
+        raise ValueError("Use of absolute path {} where a relative path is required. You probably meant to use `externals`")
+    tag, ext = os.path.splitext(string)
+    if ext == '':
+        ext = None
+    else:
+        ext = ext[1:]
+    return FileRef(tag, ext, use)

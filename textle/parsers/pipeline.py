@@ -1,6 +1,6 @@
 from lark import Lark, Tree
 from ..pipeline import steps, Pipeline, Extra
-from ..fileref import FileRef, FileUse
+from ..fileref import FileRef, FileUse, to_fref
 from ..steps import aliases
 import os
 
@@ -52,12 +52,7 @@ def _construct_params(s_obj_tree, options):
             fname = fref.children[0].value
             if os.path.isabs(fname):
                 raise ValueError("Absolute path specified for input, if you want this behavior use the externals key on the pipeline to copy this file.")
-            tag, ext = os.path.splitext(fname)
-            if ext == '':
-                ext = None
-            else:
-                ext = ext[1:]
-            files.append(FileRef(tag, ext, FileUse.INPUT))
+            files.append(to_fref(fname, FileUse.INPUT))
     else:
         files = []
 

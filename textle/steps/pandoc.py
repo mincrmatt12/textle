@@ -1,5 +1,5 @@
 from ..pipeline import Step
-from ..fileref import FileRef, FileUse
+from ..fileref import FileRef, FileUse, to_fref
 
 TAG_LOOKUP = {
     "md": "markdown",
@@ -32,6 +32,8 @@ class PandocStep(Step):
             - bib csl for pandoc
         variable:
             - list of parameters after variables
+        template:
+            - path to template file, added as dependency
     """
 
     name = "pandoc"
@@ -95,8 +97,16 @@ class PandocStep(Step):
         return list(TAG_LOOKUP.keys())
 
     def get_dependencies_for(self, output):
-        return super().get_dependencies_for(output)
+        normal_depends = super().get_dependencies_for(output)
+        if self.opt["bib_source"] not in ["natbib", "biblatex", "none"]:
+            normal_depends.append(to_fref(self.opt["bib_source"], FileUse.INPUT))
+            if "bib_csl" in self.opt:
+                normal_depends.append(to_fref(self.opt["bib_csl"], FileUse.INPUT))
+        if "template" in self.opt:
+            normal_depends.append(to_fref(self.opt["template"], FileUse.INPUT))
 
+        return normal_depends
+        
     def get_command_for(self, product):
         base_command = ["pandoc", "--from", self.in_type, "--to", self.out_type, "-i", self.input, "-o", self.output,
                 *self.extra_args]
@@ -108,8 +118,11 @@ class PandocStep(Step):
         elif self.opt["bib_source"] == "natbib":
             base_command.append("--natbib")
         elif self.opt["bib_source"] != "none":
-            base_command.extend(["--bibliography", self.opt["bib_source"]])
+            base_command.extend(["--bibliography", to_fref(self.opt["bib_source"], FileUse.INPUT)])
             if "bib_csl" in self.opt:
-                base_command.extend(["--csl", self.opt["bib_csl"]])
+                base_command.extend(["--csl", to_fref(self.opt["bib_csl"], FileUse.INPUT)])
+
+        if "template" in self.opt:
+            base_command.extend(["--template", to_fref(self.opt["template"], FileUse.INPUT)])
 
         return (base_command,)
