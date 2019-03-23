@@ -23,9 +23,6 @@ class TeXStep(Step):
         self.has_glossary = False
         self.driver = "xetex" if subtype is None else subtype
 
-        for x in extras:
-            print(x.name)
-
         # this is a thingy
         for extra in self.extras:
             # interpret options

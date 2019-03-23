@@ -247,8 +247,6 @@ class Pipeline:
             mtime = self.modification_date(product)
 
             if any(mtime <= self.modification_date(x) for x in step.get_dependencies_for(product)):
-                print(product.to_str(), mtime, *((self.modification_date(x), x.to_str()) for x in step.get_dependencies_for(product)))
-
                 cmds = step.get_command_for(product)
                 for cmd in cmds:
                     for i in range(len(cmd)):
