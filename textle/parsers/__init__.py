@@ -1,2 +1,2 @@
-import pipeline
-import textlefile
+from . import pipeline
+from . import textlefile

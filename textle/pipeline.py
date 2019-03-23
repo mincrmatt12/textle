@@ -50,10 +50,10 @@ class Step(metaclass = abc.ABCMeta):
 
     name = ""
 
-    def __init__(self, files, subtype, extras, options):
+    def __init__(self, files, subtype, options, extras):
         self.extras = extras
-        if not all(self.handles_extra_type(x) for x in extras):
-            raise ValueError("Invalid extra type {} for {}".format(x.name, self.name))
+        if not all(self.handles_extra_type(x.name) for x in extras):
+            raise ValueError("Invalid extra type: {} for {}".format(", ".join(x.name for x in extras), self.name))
         self.options = options
         self.subtype = subtype
         self.files = files
@@ -79,7 +79,7 @@ class Step(metaclass = abc.ABCMeta):
     def solve_inout(self):
         """
         Determine the types for input and output.
-        This method is called in order from left to right on the pipeline, so the previous ref is concrete and the next can be queried
+        This method is called in order from left to right on the pipeline, so the previous ref is concrete and the next's  valid types can be queried
         """
         pass
 
@@ -94,7 +94,7 @@ class Step(metaclass = abc.ABCMeta):
     @abc.abstractmethod
     def get_input_types_valid(self):
         """
-        Static.
+        Must be callable at all times.
         If empty, assume all inputs are valid
         """
         return []
@@ -134,16 +134,16 @@ class Step(metaclass = abc.ABCMeta):
 
 class Sink(Step):
     def __init__(self, files, subtype, extras, options):
+        super().__init__(files, subtype, extras, options)
         if not self.files:
             raise ValueError("Missing output file for sink {}".format(self.name))
-        super().__init__(files, subtype, extras, options)
         self.output = self.input
         self.input = None
 
     def get_input_types_valid(self):
-        return []
+        return [self.name]
 
-    def get_products():
+    def get_products(self):
         return []
 
     def get_dependencies_for(self, product):
@@ -152,12 +152,15 @@ class Sink(Step):
     def get_command_for(self, product):
         return []
 
-    def get_output_type():
+    def get_output_type(self):
         return self.name
+
+    def solve_inout(self):
+        pass
 
 
 class Pipeline:
-    def __init__(self, steps, root):
+    def __init__(self, steps, root=""):
         self.steps = steps
         self.root = root
         self.all_inputs = set()
@@ -175,17 +178,20 @@ class Pipeline:
         
         # Generate inputs and outputs
         for j, i in enumerate(self.steps[:-1]):
-            if i.input == None and j == 0:
+            if i.input is None and j == 0:
                 raise RuntimeError("No input for first pipeline step!")
-            elif i.input == None:
+            elif i.input is None:
                 i.set_input(self.steps[j-1].output)
-            if i.output == None:
+            if i.output is None:
                 if i.get_output_type() not in self.steps[j+1].get_input_types_valid():
                     raise ValueError("Output of step {} not valid for step {}".format(i.name, self.steps[j+1].name))
-                i.set_output(FileRef(i.input.tag, i.get_output_type(), FileUse.OUTPUT, i))
+                if self.steps[j+1].output is not None and j+2 == len(self.steps): # sink
+                    i.set_output(self.steps[j+1].output)
+                else:
+                    i.set_output(FileRef(i.input.tag, i.get_output_type(), FileUse.OUTPUT, i))
         
         # Compute all inputs
-        for i in self.steps():
+        for i in self.steps:
             for j in i.get_products():
                 for k in i.get_dependencies_for(j):
                     if k.use == FileUse.INPUT:
@@ -193,7 +199,7 @@ class Pipeline:
 
     def modification_date(self, fileref):
         try:
-            return os.path.getmtime(os.path.join(self.root, fileref.tag + os.path.extsep + fileref.ext))
+            return os.path.getmtime(os.path.join(self.root, fileref.to_str()))
         except OSError:
             return 0
                 
@@ -213,6 +219,7 @@ class Pipeline:
                 xx = products.index(p)
                 for j in step.get_dependencies_for(p):
                     if j in products and products.index(j) > xx:
+                        print(p.to_str(), "wants", j.to_str(), "but: ", ", ".join(x.to_str() for x in products))
                         return False
             
             return True
@@ -225,8 +232,10 @@ class Pipeline:
                 xx = products.index(p)
                 for j in step.get_dependencies_for(p):
                     if j in products and products.index(j) > xx:
+                        print(p.to_str(), j.to_str())
+                        idx = products.index(j)
                         products.remove(p)
-                        products.insert(xx, p)
+                        products.insert(idx, p)
                         break
             if circular_test > 200:
                 raise OverflowError("Circular dependency detected.")
@@ -237,7 +246,14 @@ class Pipeline:
             mtime = self.modification_date(product)
 
             if any(mtime <= self.modification_date(x) for x in step.get_dependencies_for(product)):
-                resultant_commands.append(step.get_command_for(product))
+                print(product.to_str(), mtime, *((self.modification_date(x), x.to_str()) for x in step.get_dependencies_for(product)))
+
+                cmds = step.get_command_for(product)
+                for cmd in cmds:
+                    for i in range(len(cmd)):
+                        if type(cmd[i]) is FileRef:
+                            cmd[i] = os.path.join(self.root, cmd[i].to_str())
+                resultant_commands.extend(cmds)
 
         return resultant_commands
 

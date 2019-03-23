@@ -12,3 +12,15 @@ class FileRef:
         self.output_step = None
         self.ext = ext
         self.use = use
+
+    def __eq__(self, b):
+        return self.tag == b.tag and self.ext == b.ext and self.use == b.use and self.output_step == b.output_step
+
+    def to_str(self):
+        if self.ext == None:
+            return self.tag
+        else:
+            return self.tag + "." + self.ext
+
+    def __hash__(self):
+        return hash((self.tag, self.ext, self.use))

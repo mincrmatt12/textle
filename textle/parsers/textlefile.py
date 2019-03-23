@@ -28,3 +28,6 @@ pipeline_i: pipeline options (section options)*
 
 section: "[" CNAME "]"
 """ + pipeline_raw, start="textlefile")
+
+VERSION = 1
+

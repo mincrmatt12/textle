@@ -6,3 +6,9 @@ pipeline.steps.extend([
     HTMLSink, PDFSink, TXTSink,
     TeXStep
 ])
+
+aliases = {
+        "xetex": ("tex", "xelatex"),
+        "pdftex": ("tex", "pdflatex"),
+        "biber": ("biblatex", "biber"),
+}

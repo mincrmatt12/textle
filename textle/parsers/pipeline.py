@@ -1,6 +1,7 @@
 from lark import Lark, Tree
-from ..pipeline import steps, Pipeline
+from ..pipeline import steps, Pipeline, Extra
 from ..fileref import FileRef, FileUse
+from ..steps import aliases
 import os
 
 pipeline_raw = """
@@ -25,14 +26,18 @@ l = Lark("""
 %import common.CNAME
 %import common.LETTER""" + pipeline_raw, start="pipeline")
 
-def string_to_pipeline(string):
-    return tree_to_pipeline(l.parse(string))
+def string_to_pipeline(string, options={}):
+    return tree_to_pipeline(l.parse(string), options)
 
-def _construct_params(s_obj_tree):
+def _construct_params(s_obj_tree, options):
     name_options = s_obj_tree.children[0]
     if len(name_options.children) == 1:
         name = name_options.children[0].value
-        subtype = ""
+        if name in aliases:
+            subtype = aliases[name][1]
+            name = aliases[name][0]
+        else:
+            subtype = ""
     else:
         name = name_options.children[0].value
         subtype = name_options.children[1].value
@@ -46,29 +51,49 @@ def _construct_params(s_obj_tree):
                 raise NotImplementedError("placeholder")
             fname = fref.children[0].value
             tag, ext = os.path.splitext(fname)
+            if ext == '':
+                ext = None
+            else:
+                ext = ext[1:]
             files.append(FileRef(tag, ext, FileUse.INPUT))
     else:
         files = []
 
-    return name, subtype, files
+    if name in options:
+        option = options[name]
+    else:
+        option = {}
+
+    return name, files, subtype, option
 
 def _construct(name, *args):
     try:
-        cls = (x for x in steps if x.name == name).next()
+        cls = (x for x in steps if x.name == name).__next__()
         return cls(*args)
     except StopIteration:
         raise ValueError("Invalid step/sink type {}".format(name))
 
-def tree_to_pipeline(tree: Tree, root):
+def tree_to_pipeline(tree: Tree, options=None):
+    """
+    Options is a dict: 
+    {
+        "pandoc": {
+            <options>
+        }
+    }
+    """
+    if options is None:
+        options = {}
+
     # Generate steps
     step_objs = []
     for step in tree.children:
         s_obj, *extras = step.children
 
         extras = [
-            _construct(*(_construct_params(x) + ([],))) for x in extras
+            Extra(*_construct_params(x, options)) for x in extras
         ]
 
-        step_objs.append(_construct(*(_construct_params(s_obj) + (extras,))))
+        step_objs.append(_construct(*(_construct_params(s_obj, options) + (extras,))))
     
-    return Pipeline(step_objs, root)
+    return Pipeline(step_objs)
