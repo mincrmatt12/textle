@@ -29,7 +29,7 @@ $ # or if you want it to build it live
 $ textle live
 ```
 
-For more information, see the [tutorials](tut_1.md)
+For more information, see the [user guide](tut_1.md)
 
 If you want to extend `textle` with new steps, see the [API index](api_index.md).
 

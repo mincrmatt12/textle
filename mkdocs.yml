@@ -1,7 +1,14 @@
 site_name: textle documentation
+repo_url: https://github.com/mincrmatt12/textle/
+docs_dir: docs
 
 nav:
     - Home: "index.md"
+    - User Guide:
+        - Getting Started: "tut_1.md"
 
 theme:
     name: readthedocs
+
+markdown_extensions:
+  - admonition

@@ -6,7 +6,7 @@
 
 ## Usage
 
-< todo ascii animation >
+[![usage example](https://asciinema.org/a/opmSpftGOmDFBJGWHhYvXu2BT.svg)](https://asciinema.org/a/opmSpftGOmDFBJGWHhYvXu2BT)
 
 For more information, see the full documentation on [read the docs](https://textle.readthedocs.io), or in the `docs/` folder.
 
