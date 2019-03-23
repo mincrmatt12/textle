@@ -56,7 +56,8 @@ class TeXStep(Step):
 
         pdf_output = [self.input]
         if self.has_bib:
-            pdf_output.append(FileRef(self.input.tag, "bbl", FileUse.GENERATED))
+            pdf_output.append(FileRef(self.input.tag, "bbl", FileUse.GENERATED)),
+            pdf_output.append(self.bib_source)
         if self.has_glossary:
             pdf_output.append(FileRef(self.input.tag, "glo", FileUse.GENERATED))
 
