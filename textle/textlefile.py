@@ -3,12 +3,14 @@ import shutil
 from .fileref import FileRef, FileUse
 import subprocess
 from .pipeline import Sink
+from watchdog.events import FileSystemEventHandler
+from threading import Lock
 
 SEV_ERROR = 1
 SEV_INFO  = 2
 SEV_DBG   = 3
 
-class Textle:
+class Textle(FileSystemEventHandler):
     """
     Wrapper for textle files.
 
@@ -49,6 +51,8 @@ class Textle:
 
         # Takes (step info, type, message) and is called during the build process
         self.job_callback = lambda x, y, z: None
+
+        self.build_lock = Lock()
 
     def with_job_callback(self, cb):
         self.job_callback = cb
@@ -152,3 +156,11 @@ class Textle:
         else:
             for i in self.pipelines:
                 self.build_pipeline(i)
+
+    def on_modified(self, event):
+        """
+        Call build
+        """
+
+        with self.build_lock:
+            self.build(event.src_path)

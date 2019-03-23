@@ -5,7 +5,7 @@ from ..steps import aliases
 import os
 
 pipeline_raw = """
-FNAME: /[^ '"@]+/
+FNAME: /[^\[\]\\s'"@]+/
 
 pipeline: a_step ("->" a_step)+
 

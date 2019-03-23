@@ -7,5 +7,8 @@ setup(
     name="textle",
     version="0.1",
     packages=find_packages(),
-    install_requires = reqs
+    install_requires = reqs,
+    entry_points = {
+        'console_scripts': ['textle=textle.cli.cli:textle']
+    }
 )

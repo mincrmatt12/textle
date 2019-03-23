@@ -79,7 +79,8 @@ class TeXStep(Step):
         glo = FileRef(self.input.tag, "glo", FileUse.GENERATED)
 
         if product == pdf:
-            return ([self.driver, "-interaction=batchmode", self.input],[MV, FileRef(self.input.tag, "pdf", FileUse.GENERATED), pdf]) 
+            mv_cmd = [MV, FileRef(self.input.tag, "pdf", FileUse.GENERATED), pdf]
+            return ([self.driver, "-interaction=batchmode", self.input],) + ((mv_cmd,) if pdf.tag != self.input.tag else tuple())
         elif product == bbl:
             return ([self.bib_driver, FileRef(self.input.tag, None, FileUse.GENERATED)],)
         elif product == bcf:

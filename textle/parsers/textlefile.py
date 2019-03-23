@@ -30,7 +30,7 @@ options: (ONAME "=" value)*
 
 pipeline_i: pipeline (section options)*
 
-section: "[" CNAME "]"
+?section: "[" CNAME "]"
 """ + pipeline_raw, start="textlefile")
 
 VERSION = 1
@@ -45,7 +45,7 @@ def _create_odict(options):
         if val.type == "NUMBER":
             v = int(val.value)
         elif val.type == "ESCAPED_STRING":
-            v = val.value
+            v = val.value[1:-1]
         elif val.type == "BOOLEAN":
             v = True if val.value == "true" else False
         else: continue
@@ -70,8 +70,10 @@ def textlefile_from_tree(tree, root):
 
 def _odict_to_string(odict):
     def _value_out(c):
-        if type(c) in (int, str):
+        if type(c) is int:
             return str(c)
+        elif type(c) is str:
+            return "\"{}\"".format(c.replace('"', '\\"'))
         else:
             return str(c).lower()
     for k, v in odict.items():
@@ -91,7 +93,7 @@ def create_textlefile_string_from(pipelines, glob_options, glob_sections):
         try:
             g = string_to_pipeline(i, glob_sections)
         except:
-            click.echo("Pipeline is invalid: {}".format(i), stderr=True)
+            click.echo("Pipeline is invalid: {}".format(i), err=True)
             raise
     
     # Generate version declaration

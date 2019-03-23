@@ -9,15 +9,16 @@ def interpret_extra_options(extra_options):
     intern_opts = {}
 
     if len(extra_options) % 2 == 1:
-        click.echo("Invalid number of extra options passed to new.", stderr=True)
-        click.abort()
+        click.echo("Invalid number of extra options passed to new.", err=True)
+        exit(1)
 
     for opt, value in zip(extra_options[::2], extra_options[1::2]):
         if not opt.startswith("--") or ":" not in opt:
-            click.echo("All extra options passed to new must be of the form --subsystem:value <some_value>", stderr=True)
-            click.abort()
+            click.echo("All extra options passed to new must be of the form --subsystem:value <some_value>", err=True)
+            exit(1)
 
-        subsystem, value, type_ = opt.split(":") if opt.count(":") == 2 else (opt.split(":"), None)
+        opt = opt[2:]
+        subsystem, name, type_ = (opt.split(":") if opt.count(":") == 2 else (opt.split(":") + [None,]))
 
         if type_ == None:
             if value in ("true", "false"):
@@ -37,16 +38,16 @@ def interpret_extra_options(extra_options):
                 }
 
         value = type_(value)
-        d = glob_opts if subsystem == "global" else intern_opts.get(subsystem, None)
-        if not d:
+        d = glob_opts if str(subsystem) == "global" else intern_opts.get(subsystem, None)
+        if d is None:
             intern_opts[subsystem] = {}
             d = intern_opts[subsystem]
 
-        if opt in d and type(d[opt]) is (type_ if type_ is not bool_adapter else bool):
-            d[opt] = [d[opt], value]
-        elif opt in d and type(d[opt]) is list:
-            d[opt].append(value)
+        if name in d and type(d[name]) is (type_ if type_ is not bool_adapter else bool):
+            d[name] = [d[name], value]
+        elif name in d and type(d[name]) is list:
+            d[name].append(value)
         else:
-            d[opt] = value
+            d[name] = value
 
     return glob_opts, intern_opts
