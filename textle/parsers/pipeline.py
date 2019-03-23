@@ -50,6 +50,8 @@ def _construct_params(s_obj_tree, options):
             if fref.data == "placeholder":
                 raise NotImplementedError("placeholder")
             fname = fref.children[0].value
+            if os.path.isabs(fname):
+                raise ValueError("Absolute path specified for input, if you want this behavior use the externals key on the pipeline to copy this file.")
             tag, ext = os.path.splitext(fname)
             if ext == '':
                 ext = None

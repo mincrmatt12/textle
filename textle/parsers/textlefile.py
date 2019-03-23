@@ -11,6 +11,8 @@ l = Lark("""
 %import common.LETTER
 %import common.NUMBER
 
+ONAME: (LETTER|"_"|"-") (LETTER|NUMBER|"_"|"-")*
+
 BOOLEAN: "true" | "false"
 DEFAULT: "default"
 
@@ -22,7 +24,7 @@ DEFAULT: "default"
 textlefile: version_decl options ("---" pipeline_i)+
 
 version_decl: "version" NUMBER
-options: (CNAME "=" value)*
+options: (ONAME "=" value)*
 
 pipeline_i: pipeline options (section options)*
 

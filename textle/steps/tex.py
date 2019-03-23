@@ -15,8 +15,8 @@ class TeXStep(Step):
     def handles_extra_type(self, et):
         return et in ("biblatex", "glossaries")
 
-    def __init__(self, files, subtype, extras, options):
-        super().__init__(files, subtype, extras, options)
+    def __init__(self, files, subtype, options, extras):
+        super().__init__(files, subtype, options, extras)
 
 
         self.has_bib = False
@@ -46,15 +46,15 @@ class TeXStep(Step):
         return "pdf"
 
     def get_products(self):
-        return super().get_products() + [
+        return super().get_products() + ([
             FileRef(self.input.tag, "bcf", FileUse.GENERATED),
             FileRef(self.input.tag, "bbl", FileUse.GENERATED),
-        ] if self.has_bib else [] + [FileRef(self.input.tag, "glo", FileUse.GENERATED)] if self.has_glossary else []
+        ] if self.has_bib else []) + ([FileRef(self.input.tag, "glo", FileUse.GENERATED)] if self.has_glossary else [])
 
     def get_dependencies_for(self, product):
         # Ignores has bib because we can just generate it
 
-        pdf_output = self.files
+        pdf_output = [self.input]
         if self.has_bib:
             pdf_output.append(FileRef(self.input.tag, "bbl", FileUse.GENERATED))
         if self.has_glossary:
@@ -67,9 +67,9 @@ class TeXStep(Step):
                 FileRef(self.input.tag, "bcf", FileUse.GENERATED),
             ]
         elif product.ext == "bcf":
-            return self.files + [self.bib_source]
+            return [self.input, self.bib_source]
         elif product.ext == "glo":
-            return self.files
+            return [self.input]
 
     def solve_inout(self):
         pass

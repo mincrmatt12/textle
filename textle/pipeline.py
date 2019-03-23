@@ -59,6 +59,8 @@ class Step(metaclass = abc.ABCMeta):
         self.files = files
         if files:
             self.input = files[0]
+        else:
+            self.input = None
         self.output = None
 
         self.next = None
@@ -133,8 +135,8 @@ class Step(metaclass = abc.ABCMeta):
     
 
 class Sink(Step):
-    def __init__(self, files, subtype, extras, options):
-        super().__init__(files, subtype, extras, options)
+    def __init__(self, files, subtype, options, extras):
+        super().__init__(files, subtype, options, extras)
         if not self.files:
             raise ValueError("Missing output file for sink {}".format(self.name))
         self.output = self.input
@@ -209,6 +211,7 @@ class Pipeline:
 
             if any(mtime <= self.modification_date(x) for x in step.get_dependencies_for(product)):
                 return True
+
         return False
 
     def get_jobs(self, step):
@@ -219,7 +222,6 @@ class Pipeline:
                 xx = products.index(p)
                 for j in step.get_dependencies_for(p):
                     if j in products and products.index(j) > xx:
-                        print(p.to_str(), "wants", j.to_str(), "but: ", ", ".join(x.to_str() for x in products))
                         return False
             
             return True
@@ -232,7 +234,6 @@ class Pipeline:
                 xx = products.index(p)
                 for j in step.get_dependencies_for(p):
                     if j in products and products.index(j) > xx:
-                        print(p.to_str(), j.to_str())
                         idx = products.index(j)
                         products.remove(p)
                         products.insert(idx, p)
