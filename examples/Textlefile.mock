@@ -6,8 +6,6 @@ flat=true
 ---
 tex:test.tex -> pdf:out.pdf
 
-global_option=false
-
 [tex]
 option="value"
 requires="test"
