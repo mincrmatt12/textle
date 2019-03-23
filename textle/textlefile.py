@@ -1,6 +1,6 @@
 import os
 import shutil
-from .fileref import FileRef, FileUse
+from .fileref import FileRef, FileUse, to_fref
 import subprocess
 from .pipeline import Sink
 from watchdog.events import FileSystemEventHandler
@@ -91,7 +91,7 @@ class Textle(FileSystemEventHandler):
 
         out_file = pipeline.steps[-1].output
 
-        self.job_callback("pipeline", SEV_DBG, "Building {}".format(out_file))
+        self.job_callback("pipeline", SEV_INFO, "Building {}".format(out_file.to_str()))
         if self.global_options["layout"] != "flat":
             # Copy all inputs
             self.job_callback("copy:in", SEV_DBG, "Copying input")
@@ -149,7 +149,7 @@ class Textle(FileSystemEventHandler):
     def build(self, from_file_change=None):
         if from_file_change is not None:
             # Instead of querying all possible pipelines, just check which pipeline this is in and build it
-            fref = FileRef(*(os.path.splitext(os.path.relpath(from_file_change, self.root_dir)) + (FileUse.INPUT,)))
+            fref = to_fref(os.path.relpath(from_file_change, self.root_dir), FileUse.INPUT)
             for i in self.pipelines:
                 if fref in i.all_inputs:
                     self.build_pipeline(i)
@@ -161,6 +161,9 @@ class Textle(FileSystemEventHandler):
         """
         Call build
         """
+
+        if not os.path.isfile(event.src_path):
+            return
 
         with self.build_lock:
             self.build(event.src_path)

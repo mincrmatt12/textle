@@ -1,5 +1,6 @@
 import click
 import os
+import time
 
 from ..parsers import textlefile
 from .autre import interpret_extra_options

@@ -63,6 +63,7 @@ class TeXStep(Step):
         elif product.ext == "bbl":
             return [
                 FileRef(self.input.tag, "bcf", FileUse.GENERATED),
+                self.bib_source
             ]
         elif product.ext == "bcf":
             return [self.input, self.bib_source]
@@ -78,13 +79,15 @@ class TeXStep(Step):
         bbl = FileRef(self.input.tag, "bbl", FileUse.GENERATED)
         glo = FileRef(self.input.tag, "glo", FileUse.GENERATED)
 
+        tex_cmd = [self.driver, "-interaction=batchmode", self.input]
+
         if product == pdf:
             mv_cmd = [MV, FileRef(self.input.tag, "pdf", FileUse.GENERATED), pdf]
-            return ([self.driver, "-interaction=batchmode", self.input],) + ((mv_cmd,) if pdf.tag != self.input.tag else tuple())
+            return (tex_cmd,) + ((mv_cmd,) if pdf.tag != self.input.tag else tuple())
         elif product == bbl:
             return ([self.bib_driver, FileRef(self.input.tag, None, FileUse.GENERATED)],)
         elif product == bcf:
-            return ([self.driver, self.input],)
+            return (tex_cmd,)
         elif product == glo:
-            return (["makeglossaries", FileRef(self.input.tag, None, FileUse.GENERATED)],)
+            return (tex_cmd, ["makeglossaries", FileRef(self.input.tag, None, FileUse.GENERATED)],)
 
