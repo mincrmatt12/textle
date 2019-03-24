@@ -3,9 +3,12 @@ from setuptools import setup, find_packages
 with open("requirements.txt") as f:
     reqs = f.read().splitlines()
 
+with open("README.md") as f:
+    readme = f.read()
+
 setup(
     name="textle",
-    version="0.1",
+    version="0.1post1",
     packages=find_packages(),
     install_requires = reqs,
     entry_points = {
@@ -23,6 +26,9 @@ setup(
         'Topic :: Text Processing :: Linguistic',
         'Environment :: Console'
     ],
+
+    long_description=readme,
+    long_description_content_type="text/markdown",
 
     keywords="latex pandoc automation tool cli click pipeline",
     url="https://github.com/mincrmatt12/textle",
