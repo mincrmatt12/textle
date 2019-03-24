@@ -30,3 +30,6 @@ MANIFEST
 # random crap
 test.py
 *.textle*
+
+#docs
+site/

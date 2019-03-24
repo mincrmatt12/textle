@@ -23,7 +23,11 @@ Alternatively, install from source by cloning this repo and using
 $ python3 setup.py install
 ```
 
-If you would like to build the documentation, todo
+To build the documentation to the `site` folder, 
+
+```
+$ mkdocs build
+```
 
 ## Why
 
