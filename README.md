@@ -1,4 +1,5 @@
 # `textle`
+[![Documentation Status](https://readthedocs.org/projects/textle/badge/?version=latest)](https://textle.readthedocs.io/en/latest/?badge=latest) ![PyPI - License](https://img.shields.io/pypi/l/textle.svg) ![PyPI](https://img.shields.io/pypi/v/textle.svg?color=orange)
 
 ![logo](docs/img/logo.png)
 
