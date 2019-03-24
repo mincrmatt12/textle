@@ -30,7 +30,7 @@ def build_message_handler(task, sev, msg):
 @click.option("-T", "--textlefile", default="Textlefile", type=str)
 @click.option('-q', '--quiet', count=True, help="Make less output; sums with verbose")
 @click.option('-v', '--verbose', count=True, help="Make more output; sums with quiet")
-@click.version_option(version="0.1")
+@click.version_option()
 def textle(root_di, quiet, verbose, textlefile):
     global root_dir, verbose_level, textlefile_name, textlefile_path
     root_dir = root_di
