@@ -6,6 +6,7 @@ nav:
     - Home: "index.md"
     - User Guide:
         - Getting Started: "tut_1.md"
+        - The Textlefile: "tut_2.md"
 
 theme:
     name: readthedocs
