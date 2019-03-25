@@ -3,12 +3,17 @@ from ..fileref import FileRef, FileUse, to_fref
 
 TAG_LOOKUP = {
     "md": "markdown",
-    "pdf": "latex",
+    "pdf": "pdflatex",
     "tex": "latex",
     "rst": "rst"
 }
 
 INV_TAG_LOOKUP = {v: k for k, v in TAG_LOOKUP.items()}
+
+OUT_LOOKUP = {k: k for k in TAG_LOOKUP.values()}
+OUT_LOOKUP.update({
+    "pdflatex": "latex"
+})
 
 class PandocStep(Step):
     """
@@ -108,7 +113,7 @@ class PandocStep(Step):
         return normal_depends
         
     def get_command_for(self, product):
-        base_command = ["pandoc", "--from", self.in_type, "--to", self.out_type, "-i", self.input, "-o", self.output,
+        base_command = ["pandoc", "--from", OUT_LOOKUP[self.in_type], "--to", OUT_LOOKUP[self.out_type], "-i", self.input, "-o", self.output,
                 *self.extra_args]
 
         if self.opt["standalone"]:

@@ -21,7 +21,7 @@ class TeXStep(Step):
 
         self.has_bib = False
         self.has_glossary = False
-        self.driver = "xetex" if subtype is None else subtype
+        self.driver = "xelatex" if not subtype else subtype
 
         # this is a thingy
         for extra in self.extras:
