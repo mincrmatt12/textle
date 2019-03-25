@@ -45,6 +45,11 @@ def textle(root_di, quiet, verbose, textlefile):
 @click.option("--overwrite", is_flag=True, default=False, help="Always overwrite an existing Textlefile")
 @click.argument("pipelines_and_options", type=str, nargs=-1)
 def new(pipelines_and_options, overwrite):
+    """
+    Create a new Textlefile from a list of pipelines and options
+
+    Options are of form --subsystem:name:[type] <value>
+    """
     count = 0
     for i in pipelines_and_options:
         if i[0] != "-":
