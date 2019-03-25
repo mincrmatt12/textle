@@ -1,5 +1,5 @@
 # `textle`
-[![Documentation Status](https://readthedocs.org/projects/textle/badge/?version=latest)](https://textle.readthedocs.io/en/latest/?badge=latest) ![PyPI - License](https://img.shields.io/pypi/l/textle.svg) [![PyPI](https://img.shields.io/pypi/v/textle.svg?color=orange)](https://pypi.org/project/textle/)
+[![Documentation Status](https://readthedocs.org/projects/textle/badge/?version=latest)](https://textle.readthedocs.io/en/latest/?badge=latest) ![PyPI - License](https://img.shields.io/pypi/l/textle.svg) [![PyPI](https://img.shields.io/pypi/v/textle.svg?color=orange)](https://pypi.org/project/textle/) [![Jenkins](https://img.shields.io/jenkins/s/https/jenkins.mm12.xyz/jenkins/job/textle/job/master.svg)](https://jenkins.mm12.xyz/jenkins/job/textle/master)
 
 ![logo](docs/img/logo.png)
 
