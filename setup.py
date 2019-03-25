@@ -8,7 +8,7 @@ with open("README.md") as f:
 
 setup(
     name="textle",
-    version="0.1post1",
+    version="0.1.1",
     packages=find_packages(),
     install_requires = reqs,
     entry_points = {
