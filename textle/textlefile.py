@@ -129,10 +129,12 @@ class Textle(FileSystemEventHandler):
                     try:
                         os.chdir(pipeline.root)
                         self.job_callback("job:{}:{}".format(step.name, job[0]), SEV_DBG, "Command {} starting".format(" ".join(job)))
-                        output = subprocess.check_output(job, stderr=subprocess.PIPE, universal_newlines=True)
+                        output = subprocess.check_output(job, stderr=subprocess.PIPE, universal_newlines=True) # TODO: do the thing
                         self.job_callback("job:{}:{}".format(step.name, job[0]), SEV_INFO, "Command {} finished sucessfully".format(" ".join(job)))
                     except subprocess.CalledProcessError as e:
                         self.job_callback("job:{}:{}".format(step.name, job[0]), SEV_ERROR, "Command {} exited with code {}.".format(" ".join(job), e.returncode))
+                        for line in e.output.splitlines():
+                            self.job_callback("job:{}:{}:output".format(step.name, job[0]), SEV_INFO, line.strip("\n"))
                         raise
                     finally:
                         os.chdir(cwd)

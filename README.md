@@ -32,7 +32,7 @@ $ mkdocs build
 
 ## Why
 
-This tool was created as I often create small one-off TeX (sometimes from markdown through pandoc) projects that need to be formatted in similar ways, and that I like building quickly.
+This tool was created as I often create small one-off TeX (sometimes from markdown through `pandoc`) projects that need to be formatted in similar ways, and that I like building quickly.
 `textle` aims to solve these problems: it makes it easy to not only build a project to a PDF once, but even to do it live; and it makes simple the definition of the project. All one has to 
 do is either use the CLI, which was designed to be powerful and simple, or write a `Textlefile`. The project also aimed to be lightweight, both binary-wise and filesystem-wise, the idea being to 
 not pollute a VCS with random files.
