@@ -113,7 +113,7 @@ class PandocStep(Step):
         return normal_depends
         
     def get_command_for(self, product):
-        base_command = ["pandoc", "--from", OUT_LOOKUP[self.in_type], "--to", OUT_LOOKUP[self.out_type], "-i", self.input, "-o", self.output,
+        base_command = ["pandoc", "--from", OUT_LOOKUP[self.in_type], "--to", OUT_LOOKUP[self.out_type], self.input, "-o", self.output,
                 *self.extra_args]
 
         if self.opt["standalone"]:
